@@ -8,6 +8,7 @@ import { RechercheParPseudoPipeComponent } from './recherche-par-pseudo-pipe/rec
 import { LoginComponent } from './login/login.component';
 import { ForbiddenComponent } from './forbidden/forbidden.component';
 import { gamerGuard } from './services/gamer.guard';
+import { ListeGenresComponent } from './liste-genres/liste-genres.component';
 
 export const routes: Routes = [
   { path: 'recherche-par-genre', component: RechercheParGenreComponent },
@@ -18,5 +19,6 @@ export const routes: Routes = [
   { path: 'update-gamer/:id', component: UpdateGamerComponent, canActivate: [gamerGuard] },
   { path: 'login', component: LoginComponent },
   { path: 'app-forbidden', component: ForbiddenComponent },
-  { path: '', redirectTo: 'gamers', pathMatch: 'full' }
+  { path: '', redirectTo: 'gamers', pathMatch: 'full' },
+  { path: 'liste-genres', component: ListeGenresComponent, canActivate: [gamerGuard] }
 ];

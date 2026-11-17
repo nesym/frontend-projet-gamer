@@ -10,6 +10,9 @@
       <li><a class="dropdown-item" routerLink="/recherche-par-pseudo-pipe" (click)="menuOpen = false">Recherche par pseudo (pipe)</a></li>
       <li><a class="dropdown-item" routerLink="/gamers" (click)="menuOpen = false">Accueil</a></li>
       @if (authService.isAdmin()) {
+        <li><a class="dropdown-item" routerLink="/liste-genres" (click)="menuOpen = false">Gestion des genres</a></li>
+      }
+      @if (authService.isAdmin()) {
         <li><a class="dropdown-item" routerLink="/add-gamer" (click)="menuOpen = false">Ajouter gamer</a></li>
       }
     </ul>

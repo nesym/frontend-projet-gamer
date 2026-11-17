@@ -40,6 +40,20 @@ export class GamerService {
     return this.genres.find(g => g.idGenre === id)!;
   }
 
+  ajouterGenre(gen: Genre) {
+    const maxId = this.genres.length > 0
+      ? Math.max(...this.genres.map(g => g.idGenre!))
+      : 0;
+    this.genres.push({ idGenre: maxId + 1, nomGenre: gen.nomGenre });
+  }
+
+  updateGenre(gen: Genre) {
+    const genreExistant = this.genres.find(g => g.idGenre === gen.idGenre);
+    if (genreExistant) {
+      genreExistant.nomGenre = gen.nomGenre;
+    }
+  }
+
   consulterGamer(id: number): Gamer {
     return this.gamers.find(g => g.idGamer === id)!;
   }
@@ -57,7 +71,8 @@ export class GamerService {
       this.gamers[index] = gam;
     }
   }
+
   rechercherParGenre(idGenre: number): Gamer[] {
-  return this.gamers.filter(g => g.genre?.idGenre === idGenre);
-}
+    return this.gamers.filter(g => g.genre?.idGenre === idGenre);
+  }
 }
