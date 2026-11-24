@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Gamer } from '../model/gamer.model';
@@ -10,22 +10,23 @@ import { GamerService } from '../services/gamer.service';
   imports: [FormsModule],
   templateUrl: './add-gamer.component.html'
 })
-export class AddGamerComponent {
+export class AddGamerComponent implements OnInit {
   newGamer = new Gamer();
-  genres: Genre[];
+  genres = signal<Genre[]>([]);
   newIdGenre!: number;
 
-  constructor(private gamerService: GamerService, private router: Router) {
-    this.genres = gamerService.listeGenres();
+  constructor(private gamerService: GamerService, private router: Router) {}
+
+  ngOnInit(): void {
+    this.gamerService.listeGenres().subscribe(cats => {
+      this.genres.set(cats._embedded.genres);
+    });
   }
 
   addGamer() {
-    this.newGamer.genre = this.gamerService.consulterGenre(this.newIdGenre);
-    if (this.newGamer.dateInscription) {
-  this.newGamer.dateInscription = new Date(this.newGamer.dateInscription);
-  }
-    this.gamerService.ajouterGamer(this.newGamer);
-    this.newGamer = new Gamer();
-    this.router.navigate(['/gamers']);
+    this.newGamer.genre = this.genres().find(g => g.idGenre === this.newIdGenre);
+    this.gamerService.ajouterGamer(this.newGamer).subscribe(() => {
+      this.router.navigate(['/gamers']);
+    });
   }
 }

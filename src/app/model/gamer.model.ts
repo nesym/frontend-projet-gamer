@@ -4,6 +4,6 @@ export class Gamer {
   idGamer?: number;
   pseudoGamer?: string;
   scoreGamer?: number;
-  dateInscription?: Date;
+  dateInscription?: string | Date;
   genre?: Genre;
 }

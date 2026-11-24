@@ -5,15 +5,15 @@
   <form>
     <div class="col-sm-2 col-md-2 col-lg-2">
       <label>ID Gamer</label>
-      <input type="number" [(ngModel)]="currentGamer.idGamer" name="idGamer" class="form-control" readonly>
+      <input type="number" [(ngModel)]="currentGamer().idGamer" name="idGamer" class="form-control" readonly>
     </div>
     <div class="col-sm-4 col-md-4 col-lg-4">
       <label>Pseudo Gamer</label>
-      <input type="text" [(ngModel)]="currentGamer.pseudoGamer" name="pseudoGamer" class="form-control">
+      <input type="text" [(ngModel)]="currentGamer().pseudoGamer" name="pseudoGamer" class="form-control">
     </div>
     <div class="col-sm-2 col-md-2 col-lg-2">
       <label>Score Gamer</label>
-      <input type="number" [(ngModel)]="currentGamer.scoreGamer" name="scoreGamer" class="form-control">
+      <input type="number" [(ngModel)]="currentGamer().scoreGamer" name="scoreGamer" class="form-control">
     </div>
     <div class="col-sm-4 col-md-4 col-lg-4">
       <label>Date inscription</label>
@@ -22,8 +22,8 @@
     <div class="col-sm-4 col-md-4 col-lg-4">
       <label>Genre</label>
       <select [(ngModel)]="updatedIdGenre" name="idGenre" class="form-select">
-        @for (g of genres; track g.idGenre) {
-          <option [ngValue]="g.idGenre">{{g.nomGenre}}</option>
+        @for (g of genres(); track g.idGenre) {
+          <option [ngValue]="g.idGenre">{{ g.nomGenre }}</option>
         }
       </select>
     </div>

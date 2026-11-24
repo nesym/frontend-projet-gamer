@@ -1,33 +1,33 @@
 <div class="container">
   <div class="card shadow mb-4">
     <div class="card-body">
+      <h1>Nombre : {{ gamers().length }}</h1>
       <table class="table table-striped">
-        <tr>
-          <th>N°</th><th>Id</th><th>Pseudo</th><th>Score</th><th>Date Inscription</th><th>Genre</th>
-          @if (authService.isAdmin()) {
-            <th>Actions</th>
-          }
-        </tr>
-        @for (gamer of gamers; track gamer.idGamer; let index = $index; let nbr = $count; let first = $first) {
-          @if (first) {
-            <h1>Nombre : {{nbr}}</h1>
-          }
-          <tbody>
+        <thead>
+          <tr>
+            <th>N°</th><th>Id</th><th>Pseudo</th><th>Score</th><th>Date Inscription</th><th>Genre</th>
+            @if (authService.isAdmin()) {
+              <th>Actions</th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @for (gamer of gamers(); track gamer.idGamer; let index = $index) {
             <tr>
-              <td>{{index}}</td>
-              <td>{{gamer.idGamer}}</td>
-              <td>{{gamer.pseudoGamer}}</td>
-              <td>{{gamer.scoreGamer}}</td>
-              <td>{{gamer.dateInscription | date:'dd/MM/yyyy'}}</td>
-              <td>{{gamer.genre?.nomGenre}}</td>
+              <td>{{ index }}</td>
+              <td>{{ gamer.idGamer }}</td>
+              <td>{{ gamer.pseudoGamer }}</td>
+              <td>{{ gamer.scoreGamer }}</td>
+              <td>{{ gamer.dateInscription | date:'dd/MM/yyyy' }}</td>
+              <td>{{ gamer.genre?.nomGenre }}</td>
               @if (authService.isAdmin()) {
-                <td><app-actions [gamer]="gamer" /></td>
+                <td><app-actions [gamer]="gamer" (gamerDeleted)="chargerGamers()" /></td>
               }
             </tr>
-          </tbody>
-        } @empty {
-          <h1>Aucun gamer trouvé !</h1>
-        }
+          } @empty {
+            <tr><td colspan="7">Aucun gamer trouvé !</td></tr>
+          }
+        </tbody>
       </table>
     </div>
   </div>

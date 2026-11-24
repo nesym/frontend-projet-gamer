@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { Gamer } from '../model/gamer.model';
 import { GamerService } from '../services/gamer.service';
@@ -11,10 +11,18 @@ import { ActionsComponent } from '../actions/actions.component';
   styleUrl: './gamers.component.css',
   templateUrl: './gamers.component.html',
 })
-export class GamersComponent {
-  gamers: Gamer[];
+export class GamersComponent implements OnInit {
+  gamers = signal<Gamer[]>([]);
 
-  constructor(private gamerService: GamerService, public authService: AuthService) {
-    this.gamers = gamerService.listeGamers();
+  constructor(private gamerService: GamerService, public authService: AuthService) {}
+
+  ngOnInit(): void {
+    this.chargerGamers();
+  }
+
+  chargerGamers(): void {
+    this.gamerService.listeGamers().subscribe(gams => {
+      this.gamers.set(gams);
+    });
   }
 }

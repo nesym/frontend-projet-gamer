@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Gamer } from '../model/gamer.model';
@@ -10,11 +10,15 @@ import { SearchFilterPipe } from '../search-filter-pipe';
   imports: [FormsModule, DatePipe, SearchFilterPipe],
   templateUrl: './recherche-par-pseudo-pipe.component.html'
 })
-export class RechercheParPseudoPipeComponent {
-  gamers: Gamer[];
+export class RechercheParPseudoPipeComponent implements OnInit {
+  gamers = signal<Gamer[]>([]);
   searchTerm = '';
 
-  constructor(private gamerService: GamerService) {
-    this.gamers = gamerService.listeGamers();
+  constructor(private gamerService: GamerService) {}
+
+  ngOnInit(): void {
+    this.gamerService.listeGamers().subscribe(gams => {
+      this.gamers.set(gams);
+    });
   }
 }

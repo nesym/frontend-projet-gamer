@@ -1,78 +1,56 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { Gamer } from '../model/gamer.model';
 import { Genre } from '../model/genre.model';
+import { GenreWrapper } from '../model/genre-wrapper.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GamerService {
-  gamers: Gamer[];
-  genres: Genre[];
+  // Si le backend tourne sur un autre port (ex : 8090), changez 8080 ici
+  apiURL: string = 'http://localhost:8080/gamers/api';
+  apiURLGenre: string = 'http://localhost:8080/gamers/genres';      // Spring Data REST
+  apiURLGenreEdit: string = 'http://localhost:8080/gamers/api/genres';
 
-  constructor() {
-    this.genres = [
-      { idGenre: 1, nomGenre: "FPS" },
-      { idGenre: 2, nomGenre: "RPG" },
-      { idGenre: 3, nomGenre: "Sport" },
-      { idGenre: 4, nomGenre: "Stratégie" }
-    ];
+  constructor(private http: HttpClient) {}
 
-    this.gamers = [
-      { idGamer: 1, pseudoGamer: "ShadowWolf", scoreGamer: 15200.5, dateInscription: new Date("2021-03-14"), genre: this.genres[0] },
-      { idGamer: 2, pseudoGamer: "QueenOfPixels", scoreGamer: 830, dateInscription: new Date("2022-07-02"), genre: this.genres[1] },
-      { idGamer: 3, pseudoGamer: "mohsen589", scoreGamer: 99999, dateInscription: new Date("2020-11-20"), genre: this.genres[2] }
-    ];
+  // ---------- Gamers ----------
+  listeGamers(): Observable<Gamer[]> {
+    return this.http.get<Gamer[]>(this.apiURL);
   }
 
-  listeGamers(): Gamer[] {
-    return this.gamers;
+  consulterGamer(id: number): Observable<Gamer> {
+    return this.http.get<Gamer>(this.apiURL + '/' + id);
   }
 
-  ajouterGamer(gam: Gamer) {
-    this.gamers.push(gam);
+  ajouterGamer(gam: Gamer): Observable<Gamer> {
+    return this.http.post<Gamer>(this.apiURL, gam);
   }
 
-  listeGenres(): Genre[] {
-    return this.genres;
+  updateGamer(gam: Gamer): Observable<Gamer> {
+    return this.http.put<Gamer>(this.apiURL, gam);
   }
 
-  consulterGenre(id: number): Genre {
-    return this.genres.find(g => g.idGenre === id)!;
+  supprimerGamer(id: number): Observable<void> {
+    return this.http.delete<void>(this.apiURL + '/' + id);
   }
 
-  ajouterGenre(gen: Genre) {
-    const maxId = this.genres.length > 0
-      ? Math.max(...this.genres.map(g => g.idGenre!))
-      : 0;
-    this.genres.push({ idGenre: maxId + 1, nomGenre: gen.nomGenre });
+  rechercherParGenre(idGenre: number): Observable<Gamer[]> {
+    return this.http.get<Gamer[]>(this.apiURL + '/gen/' + idGenre);
   }
 
-  updateGenre(gen: Genre) {
-    const genreExistant = this.genres.find(g => g.idGenre === gen.idGenre);
-    if (genreExistant) {
-      genreExistant.nomGenre = gen.nomGenre;
-    }
+  // ---------- Genres ----------
+  listeGenres(): Observable<GenreWrapper> {
+    return this.http.get<GenreWrapper>(this.apiURLGenre);
   }
 
-  consulterGamer(id: number): Gamer {
-    return this.gamers.find(g => g.idGamer === id)!;
+  ajouterGenre(gen: Genre): Observable<Genre> {
+    return this.http.post<Genre>(this.apiURLGenreEdit, { nomGenre: gen.nomGenre });
   }
 
-  supprimerGamer(gam: Gamer) {
-    const index = this.gamers.indexOf(gam);
-    if (index > -1) {
-      this.gamers.splice(index, 1);
-    }
-  }
-
-  updateGamer(gam: Gamer) {
-    const index = this.gamers.findIndex(g => g.idGamer === gam.idGamer);
-    if (index > -1) {
-      this.gamers[index] = gam;
-    }
-  }
-
-  rechercherParGenre(idGenre: number): Gamer[] {
-    return this.gamers.filter(g => g.genre?.idGenre === idGenre);
+  updateGenre(gen: Genre): Observable<Genre> {
+    return this.http.put<Genre>(this.apiURLGenreEdit, gen);
   }
 }

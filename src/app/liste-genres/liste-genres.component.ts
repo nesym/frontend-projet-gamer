@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { Genre } from '../model/genre.model';
 import { GamerService } from '../services/gamer.service';
 import { UpdateGenreComponent } from '../update-genre/update-genre.component';
@@ -9,33 +9,38 @@ import { UpdateGenreComponent } from '../update-genre/update-genre.component';
   templateUrl: './liste-genres.component.html',
   styleUrl: './liste-genres.component.css'
 })
-export class ListeGenresComponent {
-  genres: Genre[];
-  updatedGenre: Genre = { idGenre: 0, nomGenre: '' };
-  ajout: boolean = true;
+export class ListeGenresComponent implements OnInit {
+  genres = signal<Genre[]>([]);
+  updatedGenre = signal<Genre>({ idGenre: 0, nomGenre: '' });
+  ajout = signal<boolean>(true);
 
-  constructor(private gamerService: GamerService) {
-    this.genres = gamerService.listeGenres();
+  constructor(private gamerService: GamerService) {}
+
+  ngOnInit(): void {
+    this.chargerGenres();
   }
 
   chargerGenres() {
-    this.genres = this.gamerService.listeGenres();
+    this.gamerService.listeGenres().subscribe(cats => {
+      this.genres.set(cats._embedded.genres);
+    });
   }
 
   updateGenre(gen: Genre) {
-    this.updatedGenre = { ...gen };
-    this.ajout = false;
+    this.updatedGenre.set({ ...gen });
+    this.ajout.set(false);
   }
 
   genreUpdated(gen: Genre) {
     console.log('Genre updated event', gen);
-    if (this.ajout) {
-      this.gamerService.ajouterGenre(gen);
-    } else {
-      this.gamerService.updateGenre(gen);
-    }
-    this.chargerGenres();
-    this.updatedGenre = { idGenre: 0, nomGenre: '' };
-    this.ajout = true;
+    const appel = this.ajout()
+      ? this.gamerService.ajouterGenre(gen)
+      : this.gamerService.updateGenre(gen);
+
+    appel.subscribe(() => {
+      this.chargerGenres();
+      this.updatedGenre.set({ idGenre: 0, nomGenre: '' });
+      this.ajout.set(true);
+    });
   }
 }

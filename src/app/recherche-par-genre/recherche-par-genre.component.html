@@ -4,8 +4,8 @@
     <select class="form-select form-select-lg" name="idGenre"
             [ngModel]="idGenre" (ngModelChange)="onChange($event)">
       <option [ngValue]="0">Tous les genres</option>
-      @for (g of genres; track g.idGenre) {
-        <option [ngValue]="g.idGenre">{{g.nomGenre}}</option>
+      @for (g of genres(); track g.idGenre) {
+        <option [ngValue]="g.idGenre">{{ g.nomGenre }}</option>
       }
     </select>
   </div>
@@ -16,15 +16,15 @@
         <tr>
           <th>Id</th><th>Pseudo</th><th>Score</th><th>Date Inscription</th><th>Genre</th>
         </tr>
-        @for (gamer of gamers; track gamer.idGamer) {
+        @for (gamer of gamers(); track gamer.idGamer) {
           <tbody>
             <tr>
-              <td>{{gamer.idGamer}}</td>
-              <td>{{gamer.pseudoGamer}}</td>
-              <td>{{gamer.scoreGamer}}</td>
-              <td>{{gamer.dateInscription | date:'dd/MM/yyyy'}}</td>
+              <td>{{ gamer.idGamer }}</td>
+              <td>{{ gamer.pseudoGamer }}</td>
+              <td>{{ gamer.scoreGamer }}</td>
+              <td>{{ gamer.dateInscription | date:'dd/MM/yyyy' }}</td>
               @if (gamer.genre) {
-                <td>{{gamer.genre.nomGenre}}</td>
+                <td>{{ gamer.genre.nomGenre }}</td>
               } @else {
                 <td>PAS DE GENRE</td>
               }

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { Gamer } from '../model/gamer.model';
 import { GamerService } from '../services/gamer.service';
@@ -9,8 +9,9 @@ import { GamerService } from '../services/gamer.service';
 })
 export class ActionsComponent {
   @Input() gamer!: Gamer;
+  @Output() gamerDeleted = new EventEmitter<void>();
 
-  constructor(private gamerService: GamerService, private router: Router) { }
+  constructor(private gamerService: GamerService, private router: Router) {}
 
   modifier() {
     this.router.navigate(['/update-gamer', this.gamer.idGamer]);
@@ -18,7 +19,9 @@ export class ActionsComponent {
 
   supprimer() {
     if (confirm('Voulez-vous vraiment supprimer ce gamer ?')) {
-      this.gamerService.supprimerGamer(this.gamer);
+      this.gamerService.supprimerGamer(this.gamer.idGamer!).subscribe(() => {
+        this.gamerDeleted.emit();
+      });
     }
   }
 }
